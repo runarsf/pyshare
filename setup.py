@@ -10,7 +10,7 @@ from setuptools import setup
 
 version = re.search(
     '^__version__\s*=\s*"(.*)"',
-    open('punct/punct.py').read(),
+    open('pyshare/pyshare.py').read(),
     re.M
     ).group(1)
 
@@ -18,27 +18,27 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "punct",
-    packages = ["punct"],
+    name = "pushare",
+    packages = ["pyshare"],
     entry_points = {
-        "console_scripts": ['punct = punct.punct:main']
+        "console_scripts": ['pyshare = pyshare.pyshare:main']
 	},
     version = version,
-    description = ("A simple todo-list manager."),
+    description = ("A terminal based file uploader."),
     long_description=read('README.rst'),
     author = "runarsf",
     author_email = "runarsf@protonmail.com",
-    url = "https://github.com/runarsf/punct",
+    url = "https://github.com/runarsf/pyshare",
 
-    keywords = "todo open-source",
-    license = "MIT",
+    keywords = "open-source",
+    license = "GPLv3",
     # https://pypi.org/pypi?%3Aaction=list_classifiers
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 1 - Planning",
         "Topic :: Utilities",
         "Environment :: Console",
-        "License :: OSI Approved :: MIT License",
-        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Intended Audience :: End Users/Desktop"
     ],
 )
 

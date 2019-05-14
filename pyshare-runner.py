@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
 """Convenience wrapper for running punct directly from source tree."""
 
 
-from punct.punct import main
+from pyshare.pyshare import main
 
 
 if __name__ == '__main__':
