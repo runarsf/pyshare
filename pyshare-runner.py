@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-"""Convenience wrapper for running punct directly from source tree."""
+"""Convenience wrapper for running pyshare directly from source tree."""
 
 
 from pyshare.pyshare import main

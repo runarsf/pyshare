@@ -13,6 +13,13 @@ import getopt
 
 from .config import *
 
+def parsecfg(path: str = f'{os.path.expanduser("~")}/.pyshare.json'):
+    """Parse json config.
+
+    :param path: path of json file
+    :type path: str
+    """
+    pass
 
 def parsearg(argv):
     """Parse arguments.
@@ -20,23 +27,34 @@ def parsearg(argv):
     :param argv: arguments
     :type argv: array
     """
-    service = defaultService
+    selection = False
+    coords = False
+    full = False
 
     try:
-        opts, args = getopt.getopt(argv, "hc:", ["help", "custom="])
+        opts, args = getopt.getopt(argv, "hfsc:", ["help", "full", "selection", "custom="])
     except getopt.GetoptError:
         print('Invalid argument')
         raise SystemExit
 
+    print(opts)
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             helpMe()
             raise SystemExit
-        elif opt in ("-c", "--custom"):
-            service = str(arg)
+        if opt in ("-s", "--selection"):
+            selection = True
+        elif opt in ("-f","--full"):
+            full = True
+        #elif opt in ("-t", "--type"):
+        #    type = str(arg)
 
-    print(f'Uploaded file to {service}.')
-    raise SystemExit
+    # Use an xor gate to check if there are multiple screenshot modes
+    if bool(selection) + bool(full) != 1:
+        print('Exactly one screenshot mode is required.')
+        raise SystemExit
+
+    config = str(parsecfg())
 
 def helpMe():
     """Help formatter.
@@ -44,7 +62,9 @@ def helpMe():
     helpMessage: str = """Usage: python3 pyshare.py [args]
 
  -h, --help              Display this message.
- -c, --custom <string>   Custom file uploader."""
+ -f, --full              Capture entire view.
+ -s, --selection         Manually define screenshot coords.
+ -c, --custom <string>   Custom json path."""
     print(helpMessage)
 
 

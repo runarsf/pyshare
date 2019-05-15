@@ -1,0 +1,25 @@
+{
+
+  "Name": "i.regex.no",
+
+  "DestinationType": "ImageUploader, FileUploader",
+
+  "RequestType": "POST",
+
+  "RequestURL": "https://i.regex.no/api/upload",
+
+  "FileFormName": "files[]",
+
+  "Headers": {
+
+    "token": "5up3r53cr3770k3n"
+
+  },
+
+  "ResponseType": "Text",
+
+  "URL": "$json:files[0].url$",
+
+  "ThumbnailURL": "$json:files[0].url$"
+
+}

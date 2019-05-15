@@ -25,6 +25,7 @@ Installation
 - Initial install::
 
     pip install pyshare
+    Copy .pyshare-template.json to `~/.pyshare.json`
 
 - Updating::
 
