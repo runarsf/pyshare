@@ -3,6 +3,5 @@ __pycache__
 lists/*
 src/lists/*
 dist/
-dist
-dist/*
+build/
 *.egg-info

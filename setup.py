@@ -18,7 +18,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "pushare",
+    name = "pyshare",
     packages = ["pyshare"],
     entry_points = {
         "console_scripts": ['pyshare = pyshare.pyshare:main']
