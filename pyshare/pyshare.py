@@ -15,10 +15,11 @@ import pprint
 import tkinter
 import requests
 import datetime
+import pyperclip
 import pyscreenshot as ImageGrab
 
-from cv2 import cv2
-import numpy as np
+from pynput.mouse import Listener
+from pynput.mouse import Controller
 
 from .config import *
 
@@ -53,6 +54,7 @@ def parsearg(argv):
     upload = False
     display = False
     coords = False
+    copy = False
     filedir = f'{os.path.expanduser("~")}/.pyshare'
     filename = f'img-{str(datetime.datetime.now()).replace(" ", "-").replace(":", "_")}.png'
     filepath = f'{filedir}/{filename}'
@@ -64,7 +66,7 @@ def parsearg(argv):
         pass
 
     try:
-        opts, args = getopt.getopt(argv, "hfsc:ud", ["help", "full", "selection", "coords=", "upload", "display"])
+        opts, args = getopt.getopt(argv, "hfsp:udc", ["help", "full", "selection", "position=", "upload", "display", "copy"])
     except getopt.GetoptError:
         print('Invalid argument.')
         raise SystemExit
@@ -81,23 +83,24 @@ def parsearg(argv):
             selection = True
         elif opt in ("-f", "--full"):
             coords = 'full'
-        elif opt in ("-c", "--coords"):
+        elif opt in ("-p", "--position"):
             coords = createMatrix(str(arg))
         elif opt in ("-u", "--upload"):
             upload = True
         elif opt in ("-d", "--display"):
             display = True
+        elif opt in ("-c", "--copy"):
+            copy = True
     
     if bool(coords) + bool(selection) != 1:
         print('Please make sure you passed the correct arguments.')
         raise SystemExit
     if bool(selection):
-        #    getSelection()
-        raise SystemExit
+        coords = getSelection()
 
     screenshot(coords, filepath, display)
     if bool(upload):
-        uploadfile(filename, filepath, config)
+        uploadfile(filename, filepath, config, copy)
 
 
 def screenshot(coords, filepath: str, display: bool = False):
@@ -113,26 +116,33 @@ def screenshot(coords, filepath: str, display: bool = False):
     im.save(filepath, 'PNG')
 
 
-def uploadfile(filename: str, filepath: str, config):
+def uploadfile(filename: str, filepath: str, config, copy: bool = False):
     headers = {'token': config['Headers']['token']}
     files = {'files[]': open(filepath, 'rb')}
     r = requests.post(config['RequestURL'], files=files, headers=headers)
     print(json.loads(r.text)['files'][0]['url'])
+    if copy:
+        pyperclip.copy(json.loads(r.text)['files'][0]['url'])
 
 
-# def getSelection():
-#     # Read image
-#     im = cv2.imread("image.jpg")
-
-#     # Select ROI
-#     r = cv2.selectROI(im)
-
-#     # Crop image
-#     imCrop = im[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
-
-#     # Display cropped image
-#     cv2.imshow("Image", imCrop)
-#     cv2.waitKey(0)
+def getSelection():
+    coords = [[0,0],[0,0]]
+    def on_move(x, y):
+        pass
+    def on_scroll(x, y, dx, dy):
+        pass
+    def on_click(x, y, button, pressed):
+        #print(x, y, button, pressed)
+        if str(button) == 'Button.left' and str(pressed) == 'True':
+            coords[0][0] = x
+            coords[0][1] = y
+        if str(button) == 'Button.left' and str(pressed) == 'False':
+            coords[1][0] = x
+            coords[1][1] = y
+            listener.stop()
+    with Listener(on_move=on_move, on_click=on_click, on_scroll=on_scroll) as listener:
+        listener.join()
+    return coords
 
 
 def helpMe():
@@ -140,10 +150,11 @@ def helpMe():
   -h, --help              Display this message.
   -f, --full              Capture entire view.
   -s, --selection         Manually define screenshot coords.
-  -c, --coords <string>   Custom coordinates.
-        coords <format>   '[[0,0],[1920,1080]]'
+  -c, --copy              Copy URL after capture.
+  -p, --position <string> Custom coordinates.
+        position <array>  '[[0,0],[1920,1080]]'
   -d, --display           Display image after capture.
-  -u, --upload            Upload picture after capture."""
+  -u, --upload            Upload image after capture."""
     print(helpMessage)
 
 

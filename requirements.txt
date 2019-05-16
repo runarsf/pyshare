@@ -1,2 +1,4 @@
 pyscreenshot
 opencv-python
+pyperclip
+pynput
