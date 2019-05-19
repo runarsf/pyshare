@@ -88,10 +88,13 @@ def parsearg(argv):
         elif opt in ("-u", "--upload"):
             upload = True
         elif opt in ("-d", "--display"):
-            display = True
+            if str(arg) == 'browser':
+                display = 'browser'
+            else:
+                display = True
         elif opt in ("-c", "--copy"):
             copy = True
-    
+
     if bool(coords) + bool(selection) != 1:
         print('Please make sure you passed the correct arguments.')
         raise SystemExit
@@ -110,7 +113,7 @@ def screenshot(coords, filepath: str, display: bool = False):
     except:
         im = ImageGrab.grab()
 
-    if display:
+    if bool(display) and display != 'browser':
         im.show()
 
     im.save(filepath, 'PNG')
@@ -120,9 +123,12 @@ def uploadfile(filename: str, filepath: str, config, copy: bool = False):
     headers = {'token': config['Headers']['token']}
     files = {'files[]': open(filepath, 'rb')}
     r = requests.post(config['RequestURL'], files=files, headers=headers)
-    print(json.loads(r.text)['files'][0]['url'])
+    responseUrl = json.loads(r.text)['files'][0]['url']
+    print(responseUrl)
     if copy:
-        pyperclip.copy(json.loads(r.text)['files'][0]['url'])
+        pyperclip.copy(str(responseUrl))
+    if display == 'browser':
+        asd
 
 
 def getSelection():
@@ -132,7 +138,7 @@ def getSelection():
     def on_scroll(x, y, dx, dy):
         pass
     def on_click(x, y, button, pressed):
-        #print(x, y, button, pressed)
+        print(x, y, button, pressed)
         if str(button) == 'Button.left' and str(pressed) == 'True':
             coords[0][0] = x
             coords[0][1] = y

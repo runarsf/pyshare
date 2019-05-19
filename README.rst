@@ -26,6 +26,7 @@ Installation
 
     pip install pyshare
     Copy .pyshare-template.json to `~/.pyshare.json`
+    python3 -m pip install --user -r ./requirements.txt
 
 - Updating::
 
